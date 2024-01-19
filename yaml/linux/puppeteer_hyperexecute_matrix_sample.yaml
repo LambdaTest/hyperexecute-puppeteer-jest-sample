@@ -3,15 +3,36 @@ version: '0.1'
 globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
+
+runson: ${matrix.os}
+
+retryOnFailure: true
+maxRetries: 1
+parallelism: 1
+
 matrix:
   os: [linux]
   files: ["specs/google.spec.js","specs/lt.spec.js"]
-runson: ${matrix.os}
+
 pre:
   - npm install
+
 cacheKey: '{{ checksum "package.json" }}'
 cacheDirectories:
   - node_modules
+
+mergeArtifacts: true
+uploadArtefacts:
+  - name: FinalReport 
+    path:
+    - report/
+
+report: true
+partialReports:
+    type: json
+    location: /
+    frameworkName: extent
+
 testSuites:
   - npm test -- $files
 
